@@ -1,0 +1,42 @@
+author: Myles McNamara
+description: Captive Portal example application
+arch: esp32
+version: 1.0
+manifest_version: 2017-05-18
+libs_version: ${mos.version}
+modules_version: ${mos.version}
+mongoose_os_version: ${mos.version}
+
+config_schema:
+  - ["debug.level", 3]
+  - ["wifi.ap.enable", true]
+  - ["cportal.enable", true ]
+  - ["cportal.any", false]
+  - ["wifi.ap.ssid", "s", "CPortal_??????", {title: "SSID"}]
+  - ["wifi.ap.pass", "s", "captiveportal", {title: "Password", type: "password"}]
+    # We include these with dummy values and set to false to prevent AP disconnect when scan due to device
+  # only being in AP mode, to switch to AP+STA mode.  With some config set, it starts in AP+STA mode
+  - ["wifi.sta.enable", false ]
+  - ["wifi.sta.ssid", "Dummy_SSID" ]
+  - ["wifi.sta.pass", "Dummy_PASS" ]
+
+tags:
+  - js
+
+filesystem:
+  - fs
+
+build_vars:
+  # Required to start device in AP+STA mode (to prevent disconnect on scan call)
+  MGOS_WIFI_ENABLE_AP_STA: 1
+
+libs:
+  - origin: https://github.com/mongoose-os-libs/boards
+  - origin: https://github.com/mongoose-os-libs/ca-bundle
+  # These are required for things like mos config-set config-get, put, rm, etc
+  - origin: https://github.com/mongoose-os-libs/rpc-uart
+  - origin: https://github.com/mongoose-os-libs/rpc-common
+  - origin: https://github.com/mongoose-os-libs/rpc-service-fs
+  - origin: https://github.com/mongoose-os-libs/rpc-service-config
+  - origin: https://github.com/mongoose-os-libs/rpc-loopback
+  - origin: https://github.com/tripflex/captive-portal-wifi-stack
